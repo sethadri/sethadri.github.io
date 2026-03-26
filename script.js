@@ -51,6 +51,16 @@ const incompleteNames = projects
     .map((project) => project.name);
 console.log("Incomplete:", incompleteNames);
 
+
+const skillsData = [
+    { name: "HTML", description: "Structuring web pages semantically" },
+    { name: "CSS", description: "Styling and layout" },
+    { name: "JavaScript", description: "Making things interactive" },
+    { name: "React", description: "Building modern web apps" }
+];
+
+const skillsGrid = document.querySelector('.skills-grid');
+
 // Clear existing cards
 skillsGrid.innerHTML = '';
 
@@ -68,15 +78,6 @@ skillcard.forEach(card => {
         card.classList.toggle('selected');
     });
 });
-
-const skillsData = [
-    { name: "HTML", description: "Structuring web pages semantically" },
-    { name: "CSS", description: "Styling and layout" },
-    { name: "JavaScript", description: "Making things interactive" },
-    { name: "React", description: "Building modern web apps" }
-];
-
-const skillsGrid = document.querySelector('.skills-grid');
 
 
 
