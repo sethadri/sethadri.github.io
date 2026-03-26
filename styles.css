@@ -194,6 +194,20 @@ strong {
     margin-bottom: 0;
 }
 
+.skill-card.selected {
+    border-top-color: var(--color-accent);
+    background-color: var(--color-dark);
+    color: white;
+}
+
+.skill-card.selected h3 {
+    color: white;
+}
+
+.skill-card.selected p {
+    color: var(--color-muted);
+}
+
 /* ── Projects ── */
 .projects-grid {
     display: flex;
