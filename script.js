@@ -1,55 +1,66 @@
-// Variables
-const myName = "Seth Adri";
-const daysLeft = 20;
-const skills = ["HTML", "CSS", "JavaScript", "React"];
-
-// Template literal
-console.log(`My name is ${myName} and I have ${daysLeft} days left`);
-
-// Array operations
-console.log(skills.length);
-console.log(skills[0]);
-skills.push("Git");
-console.log(skills);
-
-// Object
-const developer = {
-    name: myName,
-    location: "England",
-    learning: true
+// 1. A function that takes a name and days remaining
+//    and returns a personalised message
+const getProgressMessage = (name, daysLeft) => {
+    return `${name} is ${daysLeft} days into their frontend journey`;
 };
 
-console.log(developer.name);
-console.log(`${developer.name} is based in ${developer.location}`);
+console.log(getProgressMessage("Seth", 20));
 
-// Select the h1 and log it
-const heading = document.querySelector('h1');
-console.log(heading);
+// 2. A function with a default parameter
+const getDayGreeting = (day = "today") => {
+    return `Let's learn something new ${day}`;
+};
 
-// Change the subtitle text dynamically
-const subtitle = document.querySelector('.hero-subtitle');
-subtitle.textContent = "Frontend Developer in training — Day 10 of 30";
+console.log(getDayGreeting("Monday"));
+console.log(getDayGreeting());
 
-// Add a class to the first section
-const firstSection = document.querySelector('section');
-firstSection.classList.add('active');
-
-// Log how many sections exist
-const allSections = document.querySelectorAll('section');
-console.log(`There are ${allSections.length} sections on this page`);
-
-const viewWorkBtn = document.querySelector('.btn-primary');
-let clickCount = 0;
-
-viewWorkBtn.addEventListener('click', (event) => {
-    event.preventDefault();   // stops it jumping to #projects for now
-    clickCount++;
-    console.log(`Button clicked ${clickCount} time(s)`);
-    
-    if (clickCount === 3) {
-        viewWorkBtn.textContent = "You really want to see my work!";
-    }
+// 3. A function that returns an object
+const createSkill = (name, level) => ({
+    name,           // shorthand for name: name
+    level,
+    isLearning: true
 });
+
+const html = createSkill("HTML", "beginner");
+const css = createSkill("CSS", "intermediate");
+console.log(html);
+console.log(css);
+
+const projects = [
+    { name: "Portfolio page", tech: "HTML/CSS", complete: true },
+    { name: "Weather app", tech: "JavaScript", complete: false },
+    { name: "Todo app", tech: "React", complete: false },
+    { name: "Interactive card", tech: "CSS/JS", complete: true }
+];
+
+// 1. Filter — get only completed projects
+const completedProjects = projects.filter((project) => project.complete);
+console.log("Completed:", completedProjects);
+
+// 2. Map — get just the names
+const projectNames = projects.map((project) => project.name);
+console.log("Names:", projectNames);
+
+// 3. Find — get the weather app specifically
+const weatherApp = projects.find((project) => project.name === "Weather app");
+console.log("Weather app:", weatherApp);
+
+// 4. Chain — get names of incomplete projects only
+const incompleteNames = projects
+    .filter((project) => !project.complete)
+    .map((project) => project.name);
+console.log("Incomplete:", incompleteNames);
+
+// Clear existing cards
+skillsGrid.innerHTML = '';
+
+// Generate new cards from data
+skillsGrid.innerHTML = skillsData.map((skill) => `
+    <div class="skill-card">
+        <h3>${skill.name}</h3>
+        <p>${skill.description}</p>
+    </div>
+`).join('');
 
 const skillcard = document.querySelectorAll('.skill-card');
 skillcard.forEach(card => {
@@ -58,3 +69,34 @@ skillcard.forEach(card => {
     });
 });
 
+const skillsData = [
+    { name: "HTML", description: "Structuring web pages semantically" },
+    { name: "CSS", description: "Styling and layout" },
+    { name: "JavaScript", description: "Making things interactive" },
+    { name: "React", description: "Building modern web apps" }
+];
+
+const skillsGrid = document.querySelector('.skills-grid');
+
+
+
+const getSkillLevel = (skill) => {
+    switch (skill) {
+        case "HTML":
+            return "Solid foundation";  
+        case "CSS":
+            return "Getting advanced";   
+        case "JavaScript":
+            return "Building fast";
+        case "React":
+            return "Coming soon";
+        default:
+           return "unknown skill";
+    }
+};
+
+console.log(getSkillLevel("HTML"));
+console.log(getSkillLevel("CSS"));
+console.log(getSkillLevel("JavaScript"));
+console.log(getSkillLevel("React"));
+console.log(getSkillLevel("Python"));
