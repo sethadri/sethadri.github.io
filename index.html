@@ -38,6 +38,24 @@
                 When I'm not coding, I enjoy 
                 <strong>watching football</strong>.
             </p>
+            <div class="tabs" id="about-tabs">
+    <div class="tab-buttons">
+        <button class="tab-btn active" data-tab="background">Background</button>
+        <button class="tab-btn" data-tab="goals">Goals</button>
+        <button class="tab-btn" data-tab="hobbies">Hobbies</button>
+    </div>
+    <div class="tab-panels">
+        <div class="tab-panel active" id="tab-background">
+            <p>I'm based in England, teaching myself frontend development through a structured 30-day programme. I started with zero experience and I'm building real projects every week.</p>
+        </div>
+        <div class="tab-panel" id="tab-goals">
+            <p>My goal is to land a junior frontend developer role within 3 months of completing this programme. I want to work on products that people actually use every day.</p>
+        </div>
+        <div class="tab-panel" id="tab-hobbies">
+            <p>When I'm not coding I enjoy watching football and apparently I can juggle 5 balls at once. Still working on juggling CSS and JavaScript simultaneously.</p>
+        </div>
+    </div>
+</div>
             <aside>
                 <h3>Fun fact</h3>
                 <p>I can juggle 5 balls at once!</p>
@@ -67,14 +85,19 @@
 
         <section id="projects">
             <h2>Projects</h2>
+            <div class="project-filters">
+              <button class="filter-btn active" data-filter="all">All</button>
+              <button class="filter-btn" data-filter="HTML/CSS">HTML & CSS</button>
+              <button class="filter-btn" data-filter="JavaScript">JavaScript</button>
+            </div>
             <div class="projects-grid">
-                <article>
+                    <article data-tech="HTML/CSS">
                     <span class="project-tag">HTML & CSS</span>
                     <h3>Personal webpage</h3>
                     <p>My first project — a responsive personal portfolio page built with semantic HTML and CSS.</p>
                     <a href="#" class="project-link">View project →</a>
                 </article>
-                <article>
+                <article data-tech="JavaScript">
                     <span class="project-tag">Coming Day 21</span>
                     <h3>Weather App</h3>
                     <p>A live weather app built using a real weather API and JavaScript.</p>
@@ -82,6 +105,9 @@
                 </article>
             </div>
         </section>
+
+        
+        
 
         <section id="contact">
             <h2>Get in touch</h2>
@@ -95,6 +121,7 @@
 
                 <label for="message">Message</label>
                 <textarea id="message" name="message" rows="5" placeholder="Say hello..."></textarea>
+                <span class="char-count">0 / 300 characters</span>
 
                 <button type="submit">Send message</button>
             </form>

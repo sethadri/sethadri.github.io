@@ -101,3 +101,64 @@ console.log(getSkillLevel("CSS"));
 console.log(getSkillLevel("JavaScript"));
 console.log(getSkillLevel("React"));
 console.log(getSkillLevel("Python"));
+
+// ── Tabs component ──
+const tabButtons = document.querySelectorAll('.tab-btn');
+const tabPanels = document.querySelectorAll('.tab-panel');
+
+tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const targetTab = button.dataset.tab;
+
+        // Remove active from all buttons and panels
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabPanels.forEach(panel => panel.classList.remove('active'));
+
+        // Add active to clicked button
+        button.classList.add('active');
+
+        // Add active to matching panel
+        document.getElementById(`tab-${targetTab}`).classList.add('active');
+    });
+});
+// ── Character counter ──
+const messageInput = document.getElementById('message');
+const charCount = document.querySelector('.char-count');
+const maxChars = 300;
+
+messageInput.addEventListener('input', () => {
+    const currentLength = messageInput.value.length;
+    const remaining = maxChars - currentLength;
+    
+    charCount.textContent = `${currentLength} / ${maxChars} characters`;
+    
+    charCount.classList.remove('warning', 'danger');
+    
+    if (remaining < 50) {
+        charCount.classList.add('danger');
+    } else if (remaining < 100) {
+        charCount.classList.add('warning');
+    }
+});
+
+const filterButtons = document.querySelectorAll('.filter-btn');
+const articles = document.querySelectorAll('article');
+
+filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+
+        // Update active button
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        // Show/hide articles based on filter
+        articles.forEach(article => {
+            if (filter === 'all' || article.dataset.tech === filter) {
+                article.style.display = '';
+            } else {
+                article.style.display = 'none';
+            }
+        });
+    });
+});
