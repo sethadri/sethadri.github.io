@@ -1,3 +1,43 @@
+
+// ── Portfolio data — defined first ──
+const portfolio = {
+    owner: {
+        name: "Seth Adri",
+        location: "England",
+        available: true
+    },
+    skills: [
+        { name: "HTML", level: "intermediate", months: 1 },
+        { name: "CSS", level: "intermediate", months: 1 },
+        { name: "JavaScript", level: "beginner", months: 0.5 },
+        { name: "React", level: "beginner", months: 0 }
+    ],
+    projects: [
+        { name: "Portfolio page", tech: "HTML/CSS", complete: true, url: "#" },
+        { name: "Weather app", tech: "JavaScript", complete: false, url: null }
+    ]
+};
+
+// ── DOM setup ──
+const skillsGrid = document.querySelector('.skills-grid');
+
+skillsGrid.innerHTML = portfolio.skills.map((skill) => `
+    <div class="skill-card">
+        <h3>${skill.name}</h3>
+        <p>${skill.level} — ${skill.months} month${skill.months !== 1 ? 's' : ''}</p>
+    </div>
+`).join('');
+
+// ── Skill card toggle ──
+const skillcard = document.querySelectorAll('.skill-card');
+skillcard.forEach(card => {
+    card.addEventListener('click', () => {
+        card.classList.toggle('selected');
+    });
+});
+
+
+
 // 1. A function that takes a name and days remaining
 //    and returns a personalised message
 const getProgressMessage = (name, daysLeft) => {
@@ -26,58 +66,32 @@ const css = createSkill("CSS", "intermediate");
 console.log(html);
 console.log(css);
 
-const projects = [
+const oldprojects = [
     { name: "Portfolio page", tech: "HTML/CSS", complete: true },
     { name: "Weather app", tech: "JavaScript", complete: false },
     { name: "Todo app", tech: "React", complete: false },
     { name: "Interactive card", tech: "CSS/JS", complete: true }
 ];
 
+
+
 // 1. Filter — get only completed projects
-const completedProjects = projects.filter((project) => project.complete);
+const completedProjects = oldprojects.filter((project) => project.complete);
 console.log("Completed:", completedProjects);
 
 // 2. Map — get just the names
-const projectNames = projects.map((project) => project.name);
+const projectNames = oldprojects.map((project) => project.name);
 console.log("Names:", projectNames);
 
 // 3. Find — get the weather app specifically
-const weatherApp = projects.find((project) => project.name === "Weather app");
+const weatherApp = oldprojects.find((project) => project.name === "Weather app");
 console.log("Weather app:", weatherApp);
 
 // 4. Chain — get names of incomplete projects only
-const incompleteNames = projects
+const incompleteNames = oldprojects
     .filter((project) => !project.complete)
     .map((project) => project.name);
 console.log("Incomplete:", incompleteNames);
-
-
-const skillsData = [
-    { name: "HTML", description: "Structuring web pages semantically" },
-    { name: "CSS", description: "Styling and layout" },
-    { name: "JavaScript", description: "Making things interactive" },
-    { name: "React", description: "Building modern web apps" }
-];
-
-const skillsGrid = document.querySelector('.skills-grid');
-
-// Clear existing cards
-skillsGrid.innerHTML = '';
-
-// Generate new cards from data
-skillsGrid.innerHTML = skillsData.map((skill) => `
-    <div class="skill-card">
-        <h3>${skill.name}</h3>
-        <p>${skill.description}</p>
-    </div>
-`).join('');
-
-const skillcard = document.querySelectorAll('.skill-card');
-skillcard.forEach(card => {
-    card.addEventListener('click', () => {
-        card.classList.toggle('selected');
-    });
-});
 
 
 
@@ -162,3 +176,46 @@ filterButtons.forEach(button => {
         });
     });
 });
+
+// Object destructuring
+const { name: portfolioOwner, location, available } = portfolio.owner;
+console.log(`${portfolioOwner} is based in ${location}`);
+console.log(`Available for work: ${available}`);
+
+// Array destructuring
+const [firstSkill, secondSkill, ...otherSkills] = portfolio.skills;
+console.log(`First skill: ${firstSkill.name}`);
+console.log(`Other skills:`, otherSkills.map(s => s.name));
+
+// Nested destructuring
+const { owner: { name: ownerName } } = portfolio;
+console.log(`Owner: ${ownerName}`);
+
+// Object.entries to display all owner info
+console.log("=== Owner info ===");
+Object.entries(portfolio.owner).forEach(([key, value]) => {
+    console.log(`${key}: ${value}`);
+});
+
+// Sort skills by months of experience
+const sortedSkills = [...portfolio.skills].sort((a, b) => b.months - a.months);
+console.log("Skills by experience:", sortedSkills.map(s => s.name));
+
+// Check if all projects have a URL
+const allHaveUrls = portfolio.projects.every(p => p.url !== null);
+console.log(`All projects have URLs: ${allHaveUrls}`);
+
+// Get only skills at intermediate level
+const intermediateSkills = portfolio.skills
+    .filter(s => s.level === "intermediate")
+    .map(s => s.name);
+console.log("Intermediate skills:", intermediateSkills);
+ 
+
+const getPortfolioSummary = ({ owner, skills, projects }) => {
+    const completedCount = projects.filter(p => p.complete).length;
+    const status = owner.available ? "Currently available for work." : "Not currently available.";
+    return `${owner.name} has ${skills.length} skills and ${completedCount} completed project. ${status}`;
+};
+
+console.log(getPortfolioSummary(portfolio));  
