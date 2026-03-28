@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Card</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="page">
+
+        <div class="controls">
+            <p class="controls-label">Theme colour</p>
+            <div class="colour-swatches">
+                <button class="swatch active" data-colour="#e154a2" style="background:#e154a2"></button>
+                <button class="swatch" data-colour="#17c8d1" style="background:#17c8d1"></button>
+                <button class="swatch" data-colour="#f39c12" style="background:#f39c12"></button>
+                <button class="swatch" data-colour="#2ecc71" style="background:#2ecc71"></button>
+                <button class="swatch" data-colour="#9b59b6" style="background:#9b59b6"></button>
+            </div>
+        </div>
+
+        <div class="card-container" id="card-container">
+            <div class="card" id="card">
+
+                <!-- Front -->
+                <div class="card-face card-front">
+                    <div class="card-header">
+                        <div class="avatar">SA</div>
+                        <div class="card-badge">Available for work</div>
+                    </div>
+                    <h1 class="card-name">Seth Adri</h1>
+                    <p class="card-title">Frontend Developer</p>
+                    <p class="card-bio">Building for the web one day at a time. 30-day journey from zero to junior developer.</p>
+                    <div class="card-tags">
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">React</span>
+                    </div>
+                    <button class="flip-btn" id="flip-btn">See my skills →</button>
+                </div>
+
+                <!-- Back -->
+                <div class="card-face card-back">
+                    <h2 class="back-title">Skills & Progress</h2>
+                    <div class="skills-list" id="skills-list"></div>
+                    <div class="card-footer">
+                        <a href="https://github.com/sethadri" class="card-link" target="_blank">GitHub</a>
+                        <a href="https://sethadri.github.io" class="card-link" target="_blank">Portfolio</a>
+                    </div>
+                    <button class="flip-btn" id="flip-back-btn">← Back</button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
