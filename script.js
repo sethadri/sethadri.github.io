@@ -178,8 +178,9 @@ filterButtons.forEach(button => {
 });
 
 // Object destructuring
-const { name: portfolioOwner, location, available } = portfolio.owner;
-console.log(`${portfolioOwner} is based in ${location}`);
+
+const { name: portfolioOwner, location: ownerLocation, available } = portfolio.owner;
+console.log(`${portfolioOwner} is based in ${ownerLocation}`);
 console.log(`Available for work: ${available}`);
 
 // Array destructuring
