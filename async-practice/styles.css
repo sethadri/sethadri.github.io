@@ -1,0 +1,17 @@
+
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        #profile {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        img {
+            max-width: 200px;
+            border-radius: 50%;
+        }
+   
