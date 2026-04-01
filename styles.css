@@ -218,6 +218,7 @@ strong {
 .projects-grid article {
     flex: 1;
     min-width: 240px;
+    max-width: calc(50% - 12px);
 }
 
 article {
