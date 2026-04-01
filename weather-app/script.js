@@ -6,6 +6,10 @@ const cityInput = document.getElementById('city-input');
 const searchBtn = document.getElementById('search-btn');
 const errorMessage = document.getElementById('error-message');
 const weatherCard = document.getElementById('weather-card');
+const recentSearchesContainer = document.getElementById('recent-searches');
+
+// ── Recent searches ──
+let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
 
 // ── Weather icons map ──
 const weatherIcons = {
@@ -23,14 +27,12 @@ const weatherIcons = {
 // ── Fetch weather ──
 const fetchWeather = async (city) => {
     const url = `${BASE_URL}?q=${city}&units=metric&appid=${API_KEY}`;
-
     const response = await fetch(url);
 
     if (!response.ok) {
-        if (response.status === 404) {
-            throw new Error('City not found. Please check the spelling.');
-        }
-        throw new Error(`Something went wrong: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        const message = errorData?.message ?? `Error: ${response.status}`;
+        throw new Error(message);
     }
 
     return response.json();
@@ -38,21 +40,82 @@ const fetchWeather = async (city) => {
 
 // ── Update UI ──
 const updateUI = (data) => {
-    const { name, sys, main, weather, wind } = data;
+    const { 
+        name,
+        sys: { country },
+        main: { temp, feels_like, humidity, pressure },
+        weather: [{ main: weatherMain, description }],
+        wind: { speed }
+    } = data;
 
     document.getElementById('city-name').textContent = name;
-    document.getElementById('country').textContent = sys.country;
-    document.getElementById('temperature').textContent = Math.round(main.temp);
-    document.getElementById('feels-like').textContent = `${Math.round(main.feels_like)}°C`;
-    document.getElementById('humidity').textContent = `${main.humidity}%`;
-    document.getElementById('wind').textContent = `${Math.round(wind.speed * 3.6)} km/h`;
-    document.getElementById('pressure').textContent = `${main.pressure} hPa`;
-    document.getElementById('description').textContent = weather[0].description;
+    document.getElementById('country').textContent = country;
+    document.getElementById('temperature').textContent = Math.round(temp);
+    document.getElementById('feels-like').textContent = `${Math.round(feels_like)}°C`;
+    document.getElementById('humidity').textContent = `${humidity}%`;
+    document.getElementById('wind').textContent = `${Math.round(speed * 3.6)} km/h`;
+    document.getElementById('pressure').textContent = `${pressure} hPa`;
+    document.getElementById('description').textContent = description;
 
-    const iconKey = weather[0].main;
-    document.getElementById('weather-icon').textContent = weatherIcons[iconKey] || '🌡️';
-
+    document.getElementById('weather-icon').textContent = weatherIcons[weatherMain] ?? '🌡️';
     errorMessage.textContent = '';
+
+    console.log(getWeatherSummary(data));
+};
+
+// ── Add to recent searches ──
+const addToRecentSearches = (city) => {
+    const normalizedCity = city.trim();
+    
+    // Remove if already exists (to avoid duplicates)
+    recentSearches = recentSearches.filter(
+        search => search.toLowerCase() !== normalizedCity.toLowerCase()
+    );
+    
+    // Add to beginning
+    recentSearches.unshift(normalizedCity);
+    
+    // Keep only last 5
+    recentSearches = recentSearches.slice(0, 5);
+    
+    // Save to localStorage
+    localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+    
+    // Update display
+    displayRecentSearches();
+};
+
+// ── Display recent searches ──
+const displayRecentSearches = () => {
+    recentSearchesContainer.innerHTML = '';
+    
+    if (recentSearches.length === 0) return;
+    
+    const title = document.createElement('p');
+    title.textContent = 'Recent:';
+    title.style.fontSize = '0.9em';
+    title.style.color = '#888';
+    title.style.marginTop = '12px';
+    title.style.marginBottom = '8px';
+    recentSearchesContainer.appendChild(title);
+    
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.style.display = 'flex';
+    buttonsContainer.style.flexWrap = 'wrap';
+    buttonsContainer.style.gap = '8px';
+    
+    recentSearches.forEach(city => {
+        const button = document.createElement('button');
+        button.textContent = city;
+        button.className = 'recent-search-btn';
+        button.addEventListener('click', () => {
+            cityInput.value = city;
+            handleSearch();
+        });
+        buttonsContainer.appendChild(button);
+    });
+    
+    recentSearchesContainer.appendChild(buttonsContainer);
 };
 
 // ── Handle search ──
@@ -71,6 +134,7 @@ const handleSearch = async () => {
     try {
         const data = await fetchWeather(city);
         updateUI(data);
+        addToRecentSearches(city);
     } catch (error) {
         errorMessage.textContent = error.message;
     } finally {
@@ -87,3 +151,7 @@ cityInput.addEventListener('keydown', (event) => {
         handleSearch();
     }
 });
+
+const getWeatherSummary = ({ name, main: { temp }, weather: [{ description }] }) => {
+    return `Currently ${Math.round(temp)}°C and ${description} in ${name}`;
+};
