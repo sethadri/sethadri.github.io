@@ -24,26 +24,72 @@ const weatherIcons = {
     'Haze': '🌫️'
 };
 
+// ── Custom errors ──
+class WeatherError extends Error {
+    constructor(message, type) {
+        super(message);
+        this.name = 'WeatherError';
+        this.type = type;
+    }
+}
+
+// ── Input validation ──
+const validateCity = (city) => {
+    if (!city || city.trim().length === 0) {
+        throw new WeatherError('Please enter a city name.', 'empty');
+    }
+    if (city.trim().length < 2) {
+        throw new WeatherError('City name must be at least 2 characters.', 'too_short');
+    }
+    if (/\d/.test(city)) {
+        throw new WeatherError('City name cannot contain numbers.', 'invalid_chars');
+    }
+};
+
+
+// ── Fetch weather ──
+
 // ── Fetch weather ──
 const fetchWeather = async (city) => {
     const url = `${BASE_URL}?q=${city}&units=metric&appid=${API_KEY}`;
-    const response = await fetch(url);
+    
+    let response;
+    
+    try {
+        response = await fetch(url);
+    } catch {
+        throw new WeatherError('No internet connection. Please check your network.', 'network');
+    }
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         const message = errorData?.message ?? `Error: ${response.status}`;
-        throw new Error(message);
+        throw new WeatherError(message, 'api');
     }
 
     return response.json();
 };
+const fetchWithRetry = async (city, retries = 1) => {
+    try {
+        return await fetchWeather(city);
+    } catch (error) {
+        if (error.type === 'network' && retries > 0) {
+            console.warn(`Retrying in 2 seconds... (${retries} attempts left)`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            return fetchWithRetry(city, retries - 1);
+        }
+        throw error;
+    }
+};
 
+// ── Weather summary ──
 const getWeatherSummary = ({ name, main: { temp }, weather: [{ description }] }) => {
     return `Currently ${Math.round(temp)}°C and ${description} in ${name}`;
 };
 
 // ── Update UI ──
 const updateUI = (data) => {
+    
     const { 
         name,
         sys: { country },
@@ -64,7 +110,12 @@ const updateUI = (data) => {
     document.getElementById('weather-icon').textContent = weatherIcons[weatherMain] ?? '🌡️';
     errorMessage.textContent = '';
 
-    console.log(getWeatherSummary(data));
+    console.group('Weather update');
+    console.log('City:', name);
+    console.log('Temp:', Math.round(temp), '°C');
+    console.log('Summary:', getWeatherSummary(data));
+    console.groupEnd();
+
 };
 
 // ── Add to recent searches ──
@@ -126,21 +177,23 @@ const displayRecentSearches = () => {
 const handleSearch = async () => {
     const city = cityInput.value.trim();
 
-    if (!city) {
-        errorMessage.textContent = 'Please enter a city name.';
-        return;
-    }
-
-    searchBtn.textContent = 'Searching...';
-    searchBtn.disabled = true;
-    errorMessage.textContent = '';
-
     try {
-        const data = await fetchWeather(city);
+        validateCity(city);
+        
+        searchBtn.textContent = 'Searching...';
+        searchBtn.disabled = true;
+        errorMessage.textContent = '';
+
+        const data = await fetchWithRetry(city);
         updateUI(data);
         addToRecentSearches(city);
+
     } catch (error) {
-        errorMessage.textContent = error.message;
+        if (error instanceof WeatherError) {
+            errorMessage.textContent = error.message;
+        } else {
+            errorMessage.textContent = error.message || 'Something went wrong.';
+        }
     } finally {
         searchBtn.textContent = 'Search';
         searchBtn.disabled = false;
