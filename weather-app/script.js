@@ -38,6 +38,10 @@ const fetchWeather = async (city) => {
     return response.json();
 };
 
+const getWeatherSummary = ({ name, main: { temp }, weather: [{ description }] }) => {
+    return `Currently ${Math.round(temp)}°C and ${description} in ${name}`;
+};
+
 // ── Update UI ──
 const updateUI = (data) => {
     const { 
@@ -152,6 +156,3 @@ cityInput.addEventListener('keydown', (event) => {
     }
 });
 
-const getWeatherSummary = ({ name, main: { temp }, weather: [{ description }] }) => {
-    return `Currently ${Math.round(temp)}°C and ${description} in ${name}`;
-};
